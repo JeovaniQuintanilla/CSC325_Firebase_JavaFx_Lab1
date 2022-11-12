@@ -4,6 +4,7 @@ import com.mycompany.mvvmexample.App;
 import viewmodel.AccessDataViewModel;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.FieldValue;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
@@ -19,6 +20,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -46,10 +49,12 @@ public class AccessFBView {
     private Button writeButton;
     @FXML
     private Button readButton;
-
+    
     private boolean key;
     private ObservableList<Person> listOfUsers = FXCollections.observableArrayList();
     private Person person;
+    Person rowToDelete;
+    
     @FXML
     private TableView<Person> tableVW;
     @FXML
@@ -140,18 +145,42 @@ public class AccessFBView {
         }
         return key;
     }
-
+ 
     @FXML
     private void deleteData(ActionEvent event) {
-        if(!tableVW.getItems().removeAll(tableVW.getSelectionModel().getSelectedItems())){
-            selectionLabel.setVisible(true);
-        }else{
-            tableVW.getItems().removeAll(tableVW.getSelectionModel().getSelectedItems());
-            selectionLabel.setVisible(false);
-        }
+        
+         
+        Person rowToDelete = tableVW.getSelectionModel().getSelectedItem();
+        ApiFuture<QuerySnapshot> future = App.fstore.collection("References").get();
+     
+        ApiFuture<WriteResult> writeResult;
+        List<QueryDocumentSnapshot> documents;
+        try {
+            documents = future.get().getDocuments();
+            //Integer age = rowToDelete.getAge();
+
+            for (QueryDocumentSnapshot document : documents) {
+                if (document.getData().get("Name").equals(rowToDelete.getName()) && document.getData().get("Major").equals(rowToDelete.getMajor())) {
+                    writeResult = App.fstore.collection("References").document(document.getId()).delete();
+                    selectionLabel.setText("Row Deleted, Re-Read To See New Table");
+                    nameField.setText(null);majorField.setText(null);ageField.setText(null);
+ 
+                } 
+            }
+
+        } catch (InterruptedException ex) {} catch (ExecutionException ex) {}
     }
 
     @FXML
     private void updateData(MouseEvent event) {
+    }
+
+    @FXML
+    private void SendData(MouseEvent event) {
+        Integer age = tableVW.getSelectionModel().getSelectedItem().getAge();
+
+        nameField.setText(tableVW.getSelectionModel().getSelectedItem().getName());
+        majorField.setText(tableVW.getSelectionModel().getSelectedItem().getMajor());
+        ageField.setText(age.toString());
     }
 }
