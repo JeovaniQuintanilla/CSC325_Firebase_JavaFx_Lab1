@@ -117,14 +117,12 @@ public class AccessFBView {
             documents = future.get().getDocuments();
             if(documents.size()>0)
             {   
-             
                 //tableVW.getItems().clear();
-                
                 System.out.println("Outing....");
                 for (QueryDocumentSnapshot document : documents) 
                 {
                    
-                   
+                   /**
                     outputField.setText(outputField.getText()+ document.getData().get("Name")+ " , Major: "+
                             document.getData().get("Major")+ " , Age: "+
                             document.getData().get("Age")+ " \n ");
@@ -132,13 +130,13 @@ public class AccessFBView {
                     person  = new Person(String.valueOf(document.getData().get("Name")), 
                             document.getData().get("Major").toString(),
                             Integer.parseInt(document.getData().get("Age").toString()));
+                    **/
                     
-                    
-                    listOfUsers.add(person);
-                    //NameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-                  // MajorCol.setCellValueFactory(new PropertyValueFactory<>("major"));
-                    //AgeCol.setCellValueFactory(new PropertyValueFactory<>("age"));
-                   //tableVW.setItems(listOfUsers);
+                   listOfUsers.add(person);
+                   NameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+                   MajorCol.setCellValueFactory(new PropertyValueFactory<>("major"));
+                   AgeCol.setCellValueFactory(new PropertyValueFactory<>("age"));
+                   tableVW.setItems(listOfUsers);
                     
                     
                    
