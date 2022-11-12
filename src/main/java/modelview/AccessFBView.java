@@ -117,7 +117,7 @@ public class AccessFBView {
             documents = future.get().getDocuments();
             if(documents.size()>0)
             {   
-                //tableVW.getItems().clear();
+                tableVW.getItems().clear();
                 System.out.println("Outing....");
                 for (QueryDocumentSnapshot document : documents) 
                 {
