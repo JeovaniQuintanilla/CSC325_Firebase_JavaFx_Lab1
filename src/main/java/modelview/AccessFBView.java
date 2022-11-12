@@ -140,6 +140,7 @@ public class AccessFBView {
 
     @FXML
     private void deleteData(ActionEvent event) {
+        tableVW.getItems().removeAll(tableVW.getSelectionModel().getSelectedItems());
     }
 
     @FXML
