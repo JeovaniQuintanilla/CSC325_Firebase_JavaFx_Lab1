@@ -115,6 +115,10 @@ public class AccessFBView {
                 System.out.println("Outing....");
                 for (QueryDocumentSnapshot document : documents) {
 
+                    person = new Person(String.valueOf(document.getData().get("Name")),
+                            document.getData().get("Major").toString(),
+                            Integer.parseInt(document.getData().get("Age").toString()));
+
                     listOfUsers.add(person);
                     NameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
                     MajorCol.setCellValueFactory(new PropertyValueFactory<>("major"));
