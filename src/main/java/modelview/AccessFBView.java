@@ -64,11 +64,15 @@ public class AccessFBView {
     @FXML
     private TableColumn<Person, Integer> AgeCol;
     @FXML
-    private HBox updateBtn;
-    @FXML
     private Button deleteBtn;
     @FXML
     private Label selectionLabel;
+    @FXML
+    private TextField newNameField;
+    @FXML
+    private TextField newMajorField;
+    @FXML
+    private TextField newAgeField;
 
     public ObservableList<Person> getListOfUsers() {
 
@@ -171,9 +175,7 @@ public class AccessFBView {
         } catch (InterruptedException ex) {} catch (ExecutionException ex) {}
     }
 
-    @FXML
-    private void updateData(MouseEvent event) {
-    }
+   
 
     @FXML
     private void SendData(MouseEvent event) {
@@ -182,5 +184,37 @@ public class AccessFBView {
         nameField.setText(tableVW.getSelectionModel().getSelectedItem().getName());
         majorField.setText(tableVW.getSelectionModel().getSelectedItem().getMajor());
         ageField.setText(age.toString());
+    }
+
+    @FXML
+    private void updateData(ActionEvent event) {
+        Person rowToUpdate = tableVW.getSelectionModel().getSelectedItem();
+        ApiFuture<QuerySnapshot> future = App.fstore.collection("References").get();
+        ApiFuture<WriteResult> writeResult;
+        
+         List<QueryDocumentSnapshot> documents;
+         try {
+            documents = future.get().getDocuments();
+            
+            for (QueryDocumentSnapshot document : documents) {
+                if((newNameField != null && newMajorField!= null && newAgeField!=null) &&
+                        (document.getData().get("Name").equals(rowToUpdate.getName()) && document.getData().get("Major").equals(rowToUpdate.getMajor()))){
+                        DocumentReference docRef =  App.fstore.collection("References").document(document.getId());
+                        writeResult = docRef.update("Name", newNameField.getText());
+                        writeResult = docRef.update("Major", newMajorField.getText());
+                        writeResult = docRef.update("Age", newAgeField.getText());
+                        
+                    //String id = ;
+                    System.out.println(document.getId() );
+                    
+                }
+            }
+        
+        
+        
+            
+            
+        
+         } catch (InterruptedException ex) {} catch (ExecutionException ex) {}
     }
 }
