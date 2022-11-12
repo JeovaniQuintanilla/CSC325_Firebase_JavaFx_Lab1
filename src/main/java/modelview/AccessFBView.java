@@ -35,8 +35,7 @@ import models.Person;
 
 public class AccessFBView {
 
- 
-     @FXML
+    @FXML
     private TextField nameField;
     @FXML
     private TextField majorField;
@@ -46,9 +45,8 @@ public class AccessFBView {
     private Button writeButton;
     @FXML
     private Button readButton;
-    @FXML
-    private TextArea outputField;
-     private boolean key;
+
+    private boolean key;
     private ObservableList<Person> listOfUsers = FXCollections.observableArrayList();
     private Person person;
     @FXML
@@ -63,10 +61,9 @@ public class AccessFBView {
     private HBox updateBtn;
     @FXML
     private Button deleteBtn;
-    
+
     public ObservableList<Person> getListOfUsers() {
-         
-        
+
         return listOfUsers;
     }
 
@@ -83,12 +80,12 @@ public class AccessFBView {
         addData();
     }
 
-        @FXML
+    @FXML
     private void readRecord(ActionEvent event) {
- 
+
         readFirebase();
     }
-    
+
     public void addData() {
 
         DocumentReference docRef = App.fstore.collection("References").document(UUID.randomUUID().toString());
@@ -103,57 +100,36 @@ public class AccessFBView {
         ageField.setText(null);
         ApiFuture<WriteResult> result = docRef.set(data);
     }
-    
-        public boolean readFirebase()
-         {
-             key = false;
+
+    public boolean readFirebase() {
+        key = false;
 
         //asynchronously retrieve all documents
-        ApiFuture<QuerySnapshot> future =  App.fstore.collection("References").get();
+        ApiFuture<QuerySnapshot> future = App.fstore.collection("References").get();
         // future.get() blocks on response
         List<QueryDocumentSnapshot> documents;
-        try 
-        {
+        try {
             documents = future.get().getDocuments();
-            if(documents.size()>0)
-            {   
+            if (documents.size() > 0) {
                 tableVW.getItems().clear();
                 System.out.println("Outing....");
-                for (QueryDocumentSnapshot document : documents) 
-                {
-                   
-                   /**
-                    outputField.setText(outputField.getText()+ document.getData().get("Name")+ " , Major: "+
-                            document.getData().get("Major")+ " , Age: "+
-                            document.getData().get("Age")+ " \n ");
-                    System.out.println(document.getId() + " => " + document.getData().get("Name"));
-                    person  = new Person(String.valueOf(document.getData().get("Name")), 
-                            document.getData().get("Major").toString(),
-                            Integer.parseInt(document.getData().get("Age").toString()));
-                    **/
-                    
-                   listOfUsers.add(person);
-                   NameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-                   MajorCol.setCellValueFactory(new PropertyValueFactory<>("major"));
-                   AgeCol.setCellValueFactory(new PropertyValueFactory<>("age"));
-                   tableVW.setItems(listOfUsers);
-                    
-                    
-                   
-        
+                for (QueryDocumentSnapshot document : documents) {
+
+                    listOfUsers.add(person);
+                    NameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+                    MajorCol.setCellValueFactory(new PropertyValueFactory<>("major"));
+                    AgeCol.setCellValueFactory(new PropertyValueFactory<>("age"));
+                    tableVW.setItems(listOfUsers);
+
                 }
-                
+
+            } else {
+                System.out.println("No data");
             }
-            else
-            {
-               System.out.println("No data"); 
-            }
-            key=true;
-            
-        }
-        catch (InterruptedException | ExecutionException ex) 
-        {
-             ex.printStackTrace();
+            key = true;
+
+        } catch (InterruptedException | ExecutionException ex) {
+            ex.printStackTrace();
         }
         return key;
     }
