@@ -24,6 +24,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -61,6 +62,8 @@ public class AccessFBView {
     private HBox updateBtn;
     @FXML
     private Button deleteBtn;
+    @FXML
+    private Label selectionLabel;
 
     public ObservableList<Person> getListOfUsers() {
 
@@ -140,7 +143,12 @@ public class AccessFBView {
 
     @FXML
     private void deleteData(ActionEvent event) {
-        tableVW.getItems().removeAll(tableVW.getSelectionModel().getSelectedItems());
+        if(!tableVW.getItems().removeAll(tableVW.getSelectionModel().getSelectedItems())){
+            selectionLabel.setVisible(true);
+        }else{
+            tableVW.getItems().removeAll(tableVW.getSelectionModel().getSelectedItems());
+            selectionLabel.setVisible(false);
+        }
     }
 
     @FXML
