@@ -24,8 +24,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import models.Person;
 
 public class AccessFBView {
@@ -46,7 +51,22 @@ public class AccessFBView {
      private boolean key;
     private ObservableList<Person> listOfUsers = FXCollections.observableArrayList();
     private Person person;
+    @FXML
+    private TableView<Person> tableVW;
+    @FXML
+    private TableColumn<Person, String> NameCol;
+    @FXML
+    private TableColumn<Person, String> MajorCol;
+    @FXML
+    private TableColumn<Person, Integer> AgeCol;
+    @FXML
+    private HBox updateBtn;
+    @FXML
+    private Button deleteBtn;
+    
     public ObservableList<Person> getListOfUsers() {
+         
+        
         return listOfUsers;
     }
 
@@ -65,6 +85,7 @@ public class AccessFBView {
 
         @FXML
     private void readRecord(ActionEvent event) {
+ 
         readFirebase();
     }
     
@@ -77,6 +98,9 @@ public class AccessFBView {
         data.put("Major", majorField.getText());
         data.put("Age", Integer.parseInt(ageField.getText()));
         //asynchronously write data
+        nameField.setText(null);
+        majorField.setText(null);
+        ageField.setText(null);
         ApiFuture<WriteResult> result = docRef.set(data);
     }
     
@@ -92,10 +116,15 @@ public class AccessFBView {
         {
             documents = future.get().getDocuments();
             if(documents.size()>0)
-            {
+            {   
+             
+                //tableVW.getItems().clear();
+                
                 System.out.println("Outing....");
                 for (QueryDocumentSnapshot document : documents) 
                 {
+                   
+                   
                     outputField.setText(outputField.getText()+ document.getData().get("Name")+ " , Major: "+
                             document.getData().get("Major")+ " , Age: "+
                             document.getData().get("Age")+ " \n ");
@@ -103,8 +132,19 @@ public class AccessFBView {
                     person  = new Person(String.valueOf(document.getData().get("Name")), 
                             document.getData().get("Major").toString(),
                             Integer.parseInt(document.getData().get("Age").toString()));
+                    
+                    
                     listOfUsers.add(person);
+                    //NameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+                  // MajorCol.setCellValueFactory(new PropertyValueFactory<>("major"));
+                    //AgeCol.setCellValueFactory(new PropertyValueFactory<>("age"));
+                   //tableVW.setItems(listOfUsers);
+                    
+                    
+                   
+        
                 }
+                
             }
             else
             {
@@ -118,5 +158,13 @@ public class AccessFBView {
              ex.printStackTrace();
         }
         return key;
+    }
+
+    @FXML
+    private void deleteData(ActionEvent event) {
+    }
+
+    @FXML
+    private void updateData(MouseEvent event) {
     }
 }
